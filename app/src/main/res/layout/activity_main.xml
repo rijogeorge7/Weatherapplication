@@ -9,13 +9,26 @@
     android:orientation="vertical"
     android:background="@color/main_bg">
 
-
-
     <include layout="@layout/appbar" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/white"/>
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/my_recycler_view_hour"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"/>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/white"/>
 
-
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/my_recycler_view_dayily"
+        android:layout_width="match_parent"
+        android:layout_height="500dp"/>
 
 </LinearLayout>
