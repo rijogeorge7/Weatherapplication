@@ -20,6 +20,10 @@
             android:name=".Services.WeatherDataService"
             android:enabled="true"
             android:exported="false"></service>
+        <provider
+            android:name="com.mogowebdesign.weatherapplication.Providers.DayWeatherProvider"
+            android:authorities="com.mogowebdesign.weatherapplication">
+        </provider>
     </application>
     <uses-permission android:name="android.permission.INTERNET" />
 

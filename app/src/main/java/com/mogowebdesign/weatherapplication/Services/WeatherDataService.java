@@ -1,21 +1,27 @@
 package com.mogowebdesign.weatherapplication.Services;
 
 import android.app.Service;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
+import android.os.Trace;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.mogowebdesign.weatherapplication.Constants;
 import com.mogowebdesign.weatherapplication.Model.Day;
 import com.mogowebdesign.weatherapplication.Model.Days;
+import com.mogowebdesign.weatherapplication.Providers.DayWeatherProviderContract;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -68,6 +74,31 @@ public class WeatherDataService extends Service {
         return days;
     }
 
+    private void putIntoDatabase(Days days) {
+
+        ContentValues[] contentValuesArray=new ContentValues[days.getDaysList().size()];
+        //ArrayList<ContentValues> contentValuesList = new ArrayList<>();
+        int count =0;
+        for(Day day : days.getDaysList()) {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(DayWeatherProviderContract.DayWeatherDB.COLUMN_NAME_DAY,day.getDay());
+            contentValues.put(DayWeatherProviderContract.DayWeatherDB.COLUMN_NAME_MAX_TEMP,day.getTempHigh());
+            contentValues.put(DayWeatherProviderContract.DayWeatherDB.COLUMN_NAME_MIN_TEMP,day.getTempLow());
+            contentValuesArray[count] = contentValues;
+            count++;
+            //contentValuesList.add(contentValues);
+            //contentValues.clear();
+        }
+        //contentValues.put(DayWeatherProviderContract.DayWeatherDB.COLUMN_NAME_DAY,days.getDaysList().get(0).getDay());
+        //contentValues.put(DayWeatherProviderContract.DayWeatherDB.COLUMN_NAME_MAX_TEMP,days.getDaysList().get(0).getTempHigh());
+        //contentValues.put(DayWeatherProviderContract.DayWeatherDB.COLUMN_NAME_MIN_TEMP,days.getDaysList().get(0).getTempLow());
+
+        //Uri uri = getContentResolver().insert(DayWeatherProviderContract.CONTENT_URI,contentValues);
+        //Toast.makeText(getBaseContext(), uri.toString(), Toast.LENGTH_LONG).show();
+
+        int inserted = getContentResolver().bulkInsert(DayWeatherProviderContract.CONTENT_URI,contentValuesArray);
+    }
+
     public class LocalBinder extends Binder {
         public WeatherDataService getService() {
             return WeatherDataService.this;
@@ -85,7 +116,10 @@ public class WeatherDataService extends Service {
                 e.printStackTrace();
                 jsonStr=null;
             }
+            //Trace.beginSection("ProcessPeople");
             Days days=parseWeatherJson(jsonStr);
+            //Trace.endSection();
+            putIntoDatabase(days);
 
         }
     }
