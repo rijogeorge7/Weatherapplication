@@ -83,9 +83,14 @@ public class DayWeatherProvider extends ContentProvider {
     @Override
     public int bulkInsert(Uri uri, ContentValues[] contentValues) {
         SQLiteDatabase db=mDayWeatherDatabase.getWritableDatabase();
+        Cursor cursor=db.rawQuery("select * from day_weather",null);
+        int dbsize=cursor.getCount();
+        Log.d("db","db before "+String.valueOf(dbsize));
         int count = 0;
+        cursor.close();
         try {
             db.beginTransaction();
+            db.execSQL("delete from "+DayWeatherProviderContract.DayWeatherDB.TABLE_NAME);
             for(ContentValues values : contentValues) {
                 Uri resultUri = doInsert(uri,values,db);
                 if (resultUri != null) {
@@ -100,6 +105,10 @@ public class DayWeatherProvider extends ContentProvider {
         } finally {
             db.endTransaction();
         }
+        Cursor cursor2=db.rawQuery("select * from day_weather",null);
+        int dbsize2=cursor2.getCount();
+        Log.d("db","db after "+String.valueOf(dbsize2));
+        cursor2.close();
         return count;
     }
 
