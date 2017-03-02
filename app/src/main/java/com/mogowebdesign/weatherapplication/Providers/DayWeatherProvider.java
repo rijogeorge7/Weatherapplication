@@ -11,6 +11,7 @@ import android.database.DatabaseErrorHandler;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,8 +23,9 @@ import android.util.Log;
 
 public class DayWeatherProvider extends ContentProvider {
 
-    private static final int WEATHERDAYLIST = 1;
-    private static final int WEATHERDAYLISTALL = 2;
+    private static final int INSERTWEATHERDAYLIST = 1;
+    private static final int INSERTWEATHERDAYLISTALL = 2;
+    private static final int GETWEATHERDAYLISTALL = 3;
     private static final String WEATHERDAYLIST_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/com.mogowebdesign.weatherapplication.Model.Days";
     private static final UriMatcher URI_MATCHER ;
 
@@ -31,8 +33,9 @@ public class DayWeatherProvider extends ContentProvider {
 
     static {
         URI_MATCHER=new UriMatcher(UriMatcher.NO_MATCH);
-        URI_MATCHER.addURI(DayWeatherProviderContract.AUTHORITY,"dayWeatherList",WEATHERDAYLIST);
-        URI_MATCHER.addURI(DayWeatherProviderContract.AUTHORITY,"dayWeatherListAll",WEATHERDAYLISTALL);
+        URI_MATCHER.addURI(DayWeatherProviderContract.AUTHORITY,"dayWeatherList",INSERTWEATHERDAYLIST);
+        URI_MATCHER.addURI(DayWeatherProviderContract.AUTHORITY,"insertDayWeatherListAll",INSERTWEATHERDAYLISTALL);
+        URI_MATCHER.addURI(DayWeatherProviderContract.AUTHORITY,"dayWeatherListGetAll",GETWEATHERDAYLISTALL);
     }
 
     @Override
@@ -43,7 +46,15 @@ public class DayWeatherProvider extends ContentProvider {
 
     @Nullable
     @Override
-    public Cursor query(@NonNull Uri uri, @Nullable String[] strings, @Nullable String s, @Nullable String[] strings1, @Nullable String s1) {
+    public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
+        SQLiteDatabase db=mDayWeatherDatabase.getReadableDatabase();
+        SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
+        builder.setTables(DayWeatherProviderContract.DayWeatherDB.TABLE_NAME);
+        switch (URI_MATCHER.match(uri)) {
+            case GETWEATHERDAYLISTALL:
+                Cursor cursor = builder.query(db,projection,selection,selectionArgs,null,null,sortOrder);
+                return cursor;
+        }
         return null;
     }
 
@@ -51,7 +62,7 @@ public class DayWeatherProvider extends ContentProvider {
     @Override
     public String getType(@NonNull Uri uri) {
         switch(URI_MATCHER.match(uri)){
-            case WEATHERDAYLIST:
+            case INSERTWEATHERDAYLIST:
                 return WEATHERDAYLIST_CONTENT_TYPE;
             default:
                 return null;

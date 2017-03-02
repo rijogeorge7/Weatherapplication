@@ -12,6 +12,7 @@ public class DayWeatherProviderContract {
 
     public static final String AUTHORITY = "com.mogowebdesign.weatherapplication";
     public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY);
+    public static final Uri CONTENT_URI_GET_ALL = Uri.parse("content://" + AUTHORITY+"/dayWeatherListGetAll");
 
     // To prevent someone from accidentally instantiating the contract class,
     // make the constructor private.
