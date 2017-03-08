@@ -39,6 +39,8 @@ public class RecyclerDayilyAdapter extends RecyclerView.Adapter<RecyclerDayilyAd
 
     @Override
     public int getItemCount() {
+        if(daysList==null)
+            return 0;
         return daysList.size();
     }
 
