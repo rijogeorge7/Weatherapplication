@@ -9,9 +9,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import com.mogowebdesign.weatherapplication.Adapters.RecyclerDayilyAdapter;
 import com.mogowebdesign.weatherapplication.Adapters.RecyclerHourAdapter;
+import com.mogowebdesign.weatherapplication.Fragments.DaysWeather;
 import com.mogowebdesign.weatherapplication.Model.Day;
 import com.mogowebdesign.weatherapplication.Model.Days;
 import com.mogowebdesign.weatherapplication.Model.Hour;
@@ -68,11 +70,12 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     @Override
     public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
         mWeatherDataService=((WeatherDataService.LocalBinder) iBinder).getService();
-        mWeatherDataService.updateWeatherData();
+        mWeatherDataService.updateWeatherData(Constants.yahooWeatherUrl);
     }
 
     @Override
     public void onServiceDisconnected(ComponentName componentName) {
         mWeatherDataService=null;
     }
+
 }

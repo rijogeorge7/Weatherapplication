@@ -3,13 +3,8 @@ package com.mogowebdesign.weatherapplication.Services;
 import android.app.Service;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
-import android.os.Trace;
-import android.support.annotation.Nullable;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.mogowebdesign.weatherapplication.Constants;
 import com.mogowebdesign.weatherapplication.Model.Day;
@@ -21,7 +16,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -40,14 +34,14 @@ public class WeatherDataService extends Service {
         return mLocalBinder;
     }
 
-    public void updateWeatherData() {
-        new MyThread().start();
+    public void updateWeatherData(String url) {
+        new dayWeatherDownloadThread(url).start();
     }
 
-    private String downloadDataFromServer() throws IOException {
+    private String downloadDataFromServer(String url) throws IOException {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
-                .url(Constants.yahooWeatherUrl)
+                .url(url)
                 .build();
         Response response = client.newCall(request).execute();
         return response.body().string();
@@ -105,13 +99,18 @@ public class WeatherDataService extends Service {
         }
     }
 
-    private class MyThread extends Thread {
+    private class dayWeatherDownloadThread extends Thread {
+
+        String url;
+        public dayWeatherDownloadThread(String url) {
+            this.url=url;
+        }
 
         @Override
         public void run() {
             String jsonStr;
             try {
-                jsonStr=downloadDataFromServer();
+                jsonStr=downloadDataFromServer(url);
             } catch (IOException e) {
                 e.printStackTrace();
                 jsonStr=null;

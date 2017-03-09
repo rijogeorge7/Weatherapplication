@@ -11,6 +11,7 @@
 
     <include layout="@layout/appbar" />
 
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
@@ -30,6 +31,6 @@
         android:name="com.mogowebdesign.weatherapplication.Fragments.DaysWeather"
         android:id="@+id/daysWeatherFragment"
         android:layout_width="match_parent"
-        android:layout_height="500dp" />
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

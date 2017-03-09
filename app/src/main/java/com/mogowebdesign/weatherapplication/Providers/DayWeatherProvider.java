@@ -113,6 +113,7 @@ public class DayWeatherProvider extends ContentProvider {
                 }
             }
             db.setTransactionSuccessful();
+            getContext().getContentResolver().notifyChange(DayWeatherProviderContract.CONTENT_URI_GET_ALL,null);
         } finally {
             db.endTransaction();
         }
