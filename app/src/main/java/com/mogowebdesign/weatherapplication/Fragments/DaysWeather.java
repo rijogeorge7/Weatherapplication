@@ -39,7 +39,7 @@ public class DaysWeather extends Fragment implements LoaderManager.LoaderCallbac
     private RecyclerView mRecyclerViewDay;
     private DayWeatherDataObserver dayWeatherDataObserver;
     private Loader dayWeatherLoader;
-    private Days days;
+    //private Days days=null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,12 +54,14 @@ public class DaysWeather extends Fragment implements LoaderManager.LoaderCallbac
 
         dayWeatherLoader = getLoaderManager().initLoader(LOADER_DAY_WEATHER, null, this);
 
-        //Cursor cursor=getActivity().getContentResolver().query(DayWeatherProviderContract.CONTENT_URI_GET_ALL,null,null,null,null);
-        //fill dummy dayily data
-        //Days days=fillDaylist(cursor);
-        //cursor.close();
-        //mAdapterDay=new RecyclerDayilyAdapter(null);
-        //mRecyclerViewDay.setAdapter(mAdapterDay);
+//        Cursor cursor=getActivity().getContentResolver().query(DayWeatherProviderContract.CONTENT_URI_GET_ALL,null,null,null,null);
+//        Days days=fillDaylist(cursor);
+//        cursor.close();
+//        if (days!=null) {
+//            mAdapterDay=new RecyclerDayilyAdapter(days.getDaysList());
+//            mRecyclerViewDay.setAdapter(mAdapterDay);
+//        }
+
         return view;
     }
 
@@ -97,7 +99,7 @@ public class DaysWeather extends Fragment implements LoaderManager.LoaderCallbac
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
 
         if (cursor != null && cursor.getCount() > 0) {
-            days=fillDaylist(cursor);
+            Days days=fillDaylist(cursor);
             updateDayWeatherAdapter(days);
         }
 
@@ -113,13 +115,13 @@ public class DaysWeather extends Fragment implements LoaderManager.LoaderCallbac
         String day;
         int min,max;
         Days days=new Days();
+        cursor.moveToFirst();
         while(cursor.moveToNext()) {
             day=cursor.getString(cursor.getColumnIndex(DayWeatherProviderContract.DayWeatherDB.COLUMN_NAME_DAY));
             max=cursor.getInt(cursor.getColumnIndex(DayWeatherProviderContract.DayWeatherDB.COLUMN_NAME_MAX_TEMP));
             min=cursor.getInt(cursor.getColumnIndex(DayWeatherProviderContract.DayWeatherDB.COLUMN_NAME_MIN_TEMP));
             days.getDaysList().add(new Day(day,max,min));
         }
-        cursor.close();
         return days;
     }
 
